@@ -8,50 +8,64 @@ const log = console.log
 const is_object = (obj:any) =>
     obj && typeof obj == 'object'  
 
+type AnyFunction = (...args:any[])=>any
+type Arg<T extends AnyFunction> = T extends (arg:infer R, ...args:any[])=>ReturnType<T> ? R : any
+type Args<T extends AnyFunction> = T extends (arg:Arg<T>, ...args:infer R)=>any ? R : Array<any>
 
-export default class _{
+export namespace _{
     
-    static curry(f:Function) {
-        return (a:any, ...bs:any[]) =>
-            bs.length ? f(a, ...bs) : (...bs) => f(a, ...bs)
+    interface Curried<T extends AnyFunction>{
+        (a:Arg<T>, ...bs:Args<T>): ReturnType<T>
+        (a:Arg<T>): (...bs:Args<T>) => ReturnType<T>      
     }
 
-    static rcurry(f:Function){
+    interface RCurried<T extends AnyFunction>{
+        (a:Arg<T>, ...bs:Args<T>): ReturnType<T>
+        (a:Arg<T>): (...bs:Args<T>) => ReturnType<T>      
+    }
+
+    export function curry<T extends AnyFunction>(f:T): Curried<T>{
+        return (a:Arg<T>, ...bs:Args<T>) =>{
+            return bs.length ? f(a, ...bs) : (...bs:Args<T>) => f(a, ...bs)
+        }
+    }
+
+    export function rcurry<T extends (...args:any[])=>any>(f:T){
         return (a:any, b:any) =>
             b ? f(a,b) : (b) => f(b,a) 
     }
 
-    static keys = (obj:Object) => 
+    export function keys (obj:Object) => 
         is_object(obj) ? Object.keys(obj) : []
 
-    static get =  _.curry(function (key, obj){
+    export const get =  _.curry(function (key, obj){
         const keys:string[] = key.split('.')
         return is_object(obj) ? keys.reduce((acc,key) => acc ? is_object(acc) ? acc[key] : undefined 
                                                              : is_object(obj) ? obj[key] : undefined, 0 )
                               : undefined 
     })
 
-    static nullable = _.curry(function (rep="", value){
+    export const nullable = _.curry(function (rep="", value){
         return !value ? rep : value
     })
 
-    static extends = _.curry(function (target, src){
+    export const extends = _.curry(function (target, src){
         src = JSON.parse(JSON.stringify(src))
         return Object.assign(target, src)
     })
 
-    static negate = function(f){
+    export const negate = function(f){
         return function(...args){
             return !f(...args)
         }
     }
 
 
-    static go = (...fns) => _.reduce(_.go1, fns)
+    export function go = (...fns) => _.reduce(_.go1, fns)
 
-    static go1 = (a, f) => a instanceof Promise ? a.then(f) : f(a)
+    export function go1 = (a, f) => a instanceof Promise ? a.then(f) : f(a)
 
-    static go2 = (acc, a, f) =>
+    export function go2 = (acc, a, f) =>
         a instanceof Promise ?
             a.then(a => {
                 if(acc == noop && a == noop)return noop
@@ -60,14 +74,14 @@ export default class _{
                 return f(acc,a)
             }, e => e == nop ? acc : Promise.reject(e)) : f(acc, a)
 
-    static pipe = (...fns) => iter => _.reduce(_.go1, iter, fns)
+    export const pipe = (...fns) => iter => _.reduce(_.go1, iter, fns)
 
 
-    static range = function (start,stop){
+    export const range = function (start,stop){
         return _.go(L.range(start,stop),_.takeAll)
     }
 
-    static each = _.curry(function (f,iter){
+    export const each = _.curry(function (f,iter){
         const res = []
         for(const [key,val] of L.each(iter)){
             if(val)res.push(f(val,key))
@@ -75,25 +89,25 @@ export default class _{
         return res
     })
     
-    static forEach = _.curry(function (f,iter){
+    export const forEach = _.curry(function (f,iter){
         for(const [key,val] of L.each(iter)) {
             if(val)f(val,key)
         }
     })
     
-    static map = _.curry(function (mapper, iter){
+    export const map = _.curry(function (mapper, iter){
         return _.pipe(L.map(mapper), _.takeAll)(iter)
     })
     
-    static filter = _.curry(function (predicate, iter){
+    export const filter = _.curry(function (predicate, iter){
         return _.go(iter, L.filter(predicate), _.takeAll)
     })
 
-    static flat = function(iter){
+    export const flat = function(iter){
         return _.pipe( L.flat, _.take(Infinity) )(iter)
     }
     
-    static take = _.curry(function (limit, iter){
+    export const take = _.curry(function (limit, iter){
         let res = []
         let init_count = 0
         iter = L.each(iter)
@@ -115,21 +129,21 @@ export default class _{
     }) 
     
     
-    static takeAll = _.take(Infinity)
+    export const takeAll = _.take(Infinity)
     
-    static catchNoop = function *(iter){
+    export const catchNoop = function *(iter){
         for(const [key,val] of L.each(iter)){
             if(val instanceof Promise) yield val.catch(e => e == nop ? noop : Promise.reject(e))
             else yield val
         }
     }
     
-    static head = iter => {
+    export const head = iter => {
         iter = iter[Symbol.iterator] && iter[Symbol.iterator]() || iter
         return iter.next().value
     }
     
-    static reduce = _.curry(function (f, acc, iter){
+    export const reduce = _.curry(function (f, acc, iter){
         //if(!acc)  return _.reduce(_.head(acc=[...f]), acc)
         if(!iter) return _.reduce(f, _.head(iter = _.catchNoop(acc)[Symbol.iterator]()), iter)
         iter.return = null
@@ -143,7 +157,7 @@ export default class _{
         
     })
     
-    static join = _.curry(function(seperator,iter){
+    export const join = _.curry(function(seperator,iter){
         if(arguments.length == 1){
             iter = seperator
             seperator = ""
@@ -151,7 +165,7 @@ export default class _{
         return _.reduce((a,b)=>`${a}${seperator}${b}`)(iter)
     })
     
-    static takeWhile = _.curry(function (f, iter){
+    export const takeWhile = _.curry(function (f, iter){
         iter = L.each(iter)
         iter.return = null
         let res = []
@@ -171,13 +185,13 @@ export default class _{
     })
 
     
-    static identity = function(val){
+    export const identity = function(val){
         return val
     }
               
     
     //find
-    static find = _.curry(function (predi, iter){
+    export const find = _.curry(function (predi, iter){
         return function recurr(){
             for(const [key,val] of L.each(iter)){
                 if(val instanceof Promise) return val.then(val=> predi(val) ? val : recurr())
@@ -187,7 +201,7 @@ export default class _{
     })
     
     //find index
-    static find_index = _.curry(function (predi, iter){
+    export const find_index = _.curry(function (predi, iter){
         let count = -1
         return function recurr(){
             for(const [key,val] of L.each(iter)){
@@ -200,17 +214,17 @@ export default class _{
     })
     
     //some
-    static some = _.curry(function (predi, iter){
+    export const some = _.curry(function (predi, iter){
         return !!_.find(predi, iter)
     })
     
     //every
-    static every = _.curry(function (predi, iter){
+    export const every = _.curry(function (predi, iter){
         return _.find_index(_.negate(predi), iter) == -1
     })
     
     //contain
-    static contains = _.curry(function (val, iter){
+    export const contains = _.curry(function (val, iter){
         return _.find(x=> x == val)(iter)
     })
     
@@ -218,19 +232,19 @@ export default class _{
     //4.접기 => reduce
     
     //min, max, min_by, max_by
-    static min = _.curry(function(iter){
+    export const min = _.curry(function(iter){
         return _.reduce(function(a,b){
             return a < b ? a : b
         }, iter)
     })
     
-    static max = _.curry(function(iter){
+    export const max = _.curry(function(iter){
         return _.reduce(function(a,b){
             return a > b ? a : b
         }, iter)
     }) 
     
-    static minby = _.curry(function(f, iter){
+    export const minby = _.curry(function(f, iter){
         return _.reduce(function(a,b){
             return f(a) < f(b) ? a : b
         }, iter)
@@ -238,31 +252,31 @@ export default class _{
     
     
     //group_by, min_by
-    static push = function(key, obj, val){
+    export const push = function(key, obj, val){
         if(key)(obj[key] = obj[key] || []).push(val)
         return obj
     }
     
-    static groupby = _.curry(function(f,iter){
+    export const groupby = _.curry(function(f,iter){
         if(typeof f == "string") f = _.get(f)
         return _.reduce(function(grouped, val){
             return _.push(f(val), grouped, val)            
         }, {}, iter)
     })
     
-    static count = function(key, obj){
+    export const count = function(key, obj){
         if(key)obj[key] = ++obj[key] || 1
         return obj
     }
     
-    static countby = _.curry(function(f,iter){
+    export const countby = _.curry(function(f,iter){
         if(typeof f == "string") f = _.get(f)
         return _.reduce(function(grouped, val){
             return _.count(f(val), grouped)     
         }, {}, iter)
     })
     
-    static indexby = _.curry(function(index:string, iter){
+    export const indexby = _.curry(function(index:string, iter){
         return _.reduce((indexed,val)=>{
             const id = _.get(index,val) 
             if(!_.get(id, indexed)) indexed[id] = val 
@@ -271,7 +285,7 @@ export default class _{
     })
     
     //unqiue
-    static uniq = _.curry(function(f,iter){
+    export const uniq = _.curry(function(f,iter){
         return _.reduce(function(distinct, val){
             if(!_.find(x=>f(x)==f(val), distinct))distinct.push(val)
             return distinct            
