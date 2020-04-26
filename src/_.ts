@@ -2,14 +2,8 @@
 import {L} from "./L"
 import { noop, nop } from "./symbol"
 import { AnyFunction, Arg, Args, RestArgs, BinaryOperator } from "./type/Operator"
-import { reduce } from "rxjs/operators"
-import { pipe } from "rxjs"
+import {} from "rxjs"
 
-const b = pipe(
-    (x:string)=>x+"sdf",
-    (x)=>x.toLowerCase())
-
-b("source")
 
 const log = console.log
 
@@ -96,7 +90,6 @@ export namespace _{
     }
 
 
-    // export function go = (...fns:Array<AnyFunction>) => _.reduce(_.go1, fns)
     function isPromise(value:any):value is Promise<any>{{
         return value instanceof Promise ? true : false
     }}
@@ -106,7 +99,7 @@ export namespace _{
         return isPromise(a) ? a.then(fn) : fn(a) as any
     }
 
-    export function go2<Acc, Val, Fn, Result>(acc:Acc, a:Val, 
+    export function go2<Acc, Val, Result>(acc:Acc, a:Val, 
         fn:Acc extends Promise<infer R> ? (acc:R,val:Val)=>Result : (acc:Acc,val:Val)=>Result){
         return a instanceof Promise ?
             a.then(a => {
@@ -119,10 +112,43 @@ export namespace _{
             }, e => e == nop ? acc : Promise.reject(e)) : fn(acc, a)
     }
 
-    // export const pipe = (...fns) => iter => _.reduce(_.go1, iter, fns)
+    interface pipe{
+        <Arg extends Array<any>,R1,R2>(
+            fn1:(...args:Arg)=>R1,fn2:(arg:R1)=>R2
+        ) : (arg:Arg extends Array<infer K> ? K : Arg)=>R2
+        <Arg extends Array<any>,R1,R2,R3>(
+            fn1:(...args:Arg)=>R1,fn2:(arg:R1)=>R2,fn3:(arg:R2)=>R3
+        ) : (arg:Arg extends Array<infer K> ? K : Arg)=>R3
+        <Arg extends Array<any>,R1,R2,R3,R4>(
+            fn1:(...args:Arg)=>R1,fn2:(arg:R1)=>R2,fn3:(arg:R2)=>R3,fn4:(arg:R3)=>R4
+        ) : (arg:Arg extends Array<infer K> ? K : Arg)=>R3
+        <Arg extends Array<any>,R1,R2,R3,R4,R5>(
+            fn1:(...args:Arg)=>R1,fn2:(arg:R1)=>R2,fn3:(arg:R2)=>R3,fn4:(arg:R3)=>R4,fn5:(arg:R4)=>R5
+        ) : (arg:Arg extends Array<infer K> ? K : Arg)=>R3
+        (...args:Array<any>) : any
+    }
+    export const pipe:pipe = function(...fns:Array<AnyFunction>){
+        return (iter:Iterable<any>) => _.reduce(_.go1, iter, fns)
+    }
 
+    
+    interface go{
+        <Iter extends Iterable<any>, R1>(
+            iter:Iter, fn1:(arg:Iter)=>R1): R1
+        <Iter extends Iterable<any>, R1,R2>(
+            iter:Iter, fn1:(arg:Iter)=>R1, fn2:(arg:R1)=>R2):R2
+        <Iter extends Iterable<any>, R1,R2,R3>(
+            iter:Iter, fn1:(arg:Iter)=>R1,fn2:(arg:R1)=>R2,fn3:(arg:R2)=>R3): R3
+        <Iter extends Iterable<any>, R1,R2,R3,R4>(
+            iter:Iter, fn1:(arg:Iter)=>R1,fn2:(arg:R1)=>R2,fn3:(arg:R2)=>R3,fn4:(arg:R3)=>R4): R4
+        <Iter extends Iterable<any>, R1,R2,R3,R4,R5>(
+            iter:Iter, fn1:(arg:Iter)=>R1,fn2:(arg:R1)=>R2,fn3:(arg:R2)=>R3,fn4:(arg:R3)=>R4,fn5:(arg:R4)=>R5): R5
+    }
+    export const go:go = function(iter:Iterable<any>,...fns:any){
+        return _.pipe(...fns)(iter)   
+    }
 
-    // export const range = function (start,stop){
+    // export const range = function (start:number,stop>:){
     //     return _.go(L.range(start,stop),_.takeAll)
     // }
 
@@ -187,23 +213,57 @@ export namespace _{
     //     iter = iter[Symbol.iterator] && iter[Symbol.iterator]() || iter
     //     return iter.next().value
     // }
+
+
+    interface reduce{
+        <Result, Val>(
+            fn:(acc:Val, val:Val)=>Result
+        ):<Iter extends Iterable<Val>>(iter:Iter)=>Result
+        <Iter extends Iterable<any>, Result>(
+            fn:Iter extends Iterable<infer Yield> 
+                ? Yield extends Promise<infer R> ? (acc:R, val:R) => Result : (acc:Yield, val:Yield) => Result
+                : (acc:Iter, val:Iter)=>Result,
+            acc:Iter):Result;
+        <Acc, Iter extends Iterable<any>, Result>(
+            fn:Iter extends Iterable<infer Yield> 
+                ? Yield extends Promise<infer R> ? (acc:Acc, val:R) => Result : (acc:Acc, val:Yield) => Result
+                : (acc:Acc, val:Acc)=>Result,
+            acc:Acc, iter:Iter):Result;
+    }
+
     
-    export const reduce = _.curry(function reduce<Fn,Result,Acc, Iter extends Iterable<any>>(
-        fn: Iter extends Iterable<infer Yield> ? 
-                Acc extends Promise<infer Val> ? (acc:Val,val:Yield)=>Result : (acc:Acc,val:Yield)=>Result  
-                : (acc:Acc,val:any)=>Result, acc:Iter extends undefined ? , iter?:Iter){
+    export const reduce:reduce = _.curry(function reduce(fn:any,acc:any,iter?:any):any{
         //if(!acc)  return _.reduce(_.head(acc=[...f]), acc)
-        if(!iter) return _.reduce(fn, _.head(iter = _.catchNoop(acc)[Symbol.iterator]()), iter)
+        if(!iter) {
+            return reduce(fn, _.head(iter = _.catchNoop(acc)[Symbol.iterator]()), iter)
+        }
         (iter as any).return = null
-        return _.go1(acc, function recurr(acc){
+        return _.go1(acc, function recurr(acc:any):any{
             for(const [key,val] of L.each(iter)){
-                acc = _.go2(acc, val, f)
+                acc = _.go2(acc, val, fn)
                 if(acc instanceof Promise) return acc.then(recurr)
             }
             return acc
         })
-        
     })
+
+
+    // export const reduce2 = _.curry(function reduce<Fn,Result,Acc, Iter extends Iterable<any>>(
+    //     fn: Iter extends Iterable<infer Yield> ? 
+    //             Acc extends Promise<infer Val> ? (acc:Val,val:Yield)=>Result : (acc:Acc,val:Yield)=>Result  
+    //             : (acc:Acc,val:any)=>Result, acc:Iter extends undefined ? , iter?:Iter){
+    //     //if(!acc)  return _.reduce(_.head(acc=[...f]), acc)
+    //     if(!iter) return _.reduce(fn, _.head(iter = _.catchNoop(acc)[Symbol.iterator]()), iter)
+    //     (iter as any).return = null
+    //     return _.go1(acc, function recurr(acc){
+    //         for(const [key,val] of L.each(iter)){
+    //             acc = _.go2(acc, val, f)
+    //             if(acc instanceof Promise) return acc.then(recurr)
+    //         }
+    //         return acc
+    //     })
+        
+    // })
     
     // export const join = _.curry(function(seperator,iter){
     //     if(arguments.length == 1){

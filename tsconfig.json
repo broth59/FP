@@ -21,7 +21,7 @@
 
         //out options
         // "outFile": "index.js" /* Concatenate and emit output to single file. */,
-        "outDir": "./" /* Redirect output structure to the directory. */,
+        "outDir": "./dist" /* Redirect output structure to the directory. */,
         "charset": "utf8",
         "removeComments": true /* Do not emit comments to output. */,
         // "noEmitOnError": true,

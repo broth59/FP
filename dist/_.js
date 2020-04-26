@@ -60,6 +60,9 @@ var __values = (this && this.__values) || function(o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var L_1 = require("./L");
 var symbol_1 = require("./symbol");
+var rxjs_1 = require("rxjs");
+var b = rxjs_1.pipe(function (x) { return x + "sdf"; }, function (x) { return x.toLowerCase(); });
+b("source");
 var log = console.log;
 var _;
 (function (_) {
@@ -163,6 +166,21 @@ var _;
         return isPromise(a) ? a.then(fn) : fn(a);
     }
     _.go1 = go1;
+    function go2(acc, a, fn) {
+        return a instanceof Promise ?
+            a.then(function (a) {
+                if (acc instanceof Symbol) {
+                    if (acc == symbol_1.noop && a == symbol_1.nop)
+                        return symbol_1.noop;
+                    if (acc == symbol_1.noop)
+                        return a;
+                    if (a == symbol_1.noop)
+                        return acc;
+                }
+                return fn(acc, a);
+            }, function (e) { return e == symbol_1.nop ? acc : Promise.reject(e); }) : fn(acc, a);
+    }
+    _.go2 = go2;
     _.catchNoop = function (iter) {
         var _a, _b, _c, key, val, e_2_1;
         var e_2, _d;
@@ -202,4 +220,32 @@ var _;
             }
         });
     };
+    function reduceT(fn, acc, iter) {
+        if (!iter) {
+            return reduceT(fn, _.head(iter = _.catchNoop(acc)[Symbol.iterator]()), iter);
+        }
+        iter.return = null;
+        return _.go1(acc, function recurr(acc) {
+            var e_3, _a;
+            try {
+                for (var _b = __values(L_1.L.each(iter)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var _d = __read(_c.value, 2), key = _d[0], val = _d[1];
+                    acc = _.go2(acc, val, fn);
+                    if (acc instanceof Promise)
+                        return acc.then(recurr);
+                }
+            }
+            catch (e_3_1) { e_3 = { error: e_3_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_3) throw e_3.error; }
+            }
+            return acc;
+        });
+    }
+    var reduce = _.curryD(reduceT);
+    var b = reduce(function (a, b) { return a + b; }, [1, 2, 3]);
+    log(b);
 })(_ = exports._ || (exports._ = {}));

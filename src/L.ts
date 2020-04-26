@@ -1,9 +1,10 @@
 
-import {_} from "./_"
+import {_} from "../index"
 import {nop, noop} from "./symbol"
+import { AnyFunction } from "./type/Operator"
 
 const log = console.log
-
+log(_.negate)
 // const last = (iter)=>
 //     iter[iter.length-1]
 
@@ -20,16 +21,13 @@ function isObject(iter:any):iter is Object{
 }
 export namespace L{
 
-    // export const range = function *(start,stop?){
-    //     if(arguments.length == 1){
-    //         stop = start
-    //         start = 0
-    //     }
-    //     for(let i=start; i<stop; i++){
-    //         yield i
-    //     }
-    // }
-    
+    export const range = function *(start:number,stop?:number){
+        const origin = start
+        stop = stop || ( start = 0, origin )
+        for(let i=start; i<stop; i++){
+            yield i
+        }
+    }
 
     export const each = function<T extends Object|Iterable<any>, Key extends keyof T>(iter:T)
         :T extends Iterable<infer Yield> ? Generator<Array<[number,Yield]>,any,unknown>:Array<[Key,T[Key]]>{
@@ -51,48 +49,16 @@ export namespace L{
         }
 
 
-
-            
-        // return (iter as Iterable<any>)[Symbol.iterator] ?
-        //     (function *(){
-        //         yield [0,"sdf"]
-        //     })()
-        //     :(function (){
-        //         return ["sdfsd"]
-        //     })()
-        // if(isIter(iter)){
-        //     type yieldV = T extends Iterable<infer R> ? R : any;
-        //     return  (function *(){
-        //         // let index = 0
-        //         // let iterable = (iter as Iterable<yieldV>)[Symbol.iterator]()
-        //         // let curr;
-        //         // // while(!(curr=iterable.next()).done){
-        //         // //     yield [index++, curr.value]
-        //         // // }                
-        //         yield [0,"string"]
-        //         // return "string"
-        //     })();
-        // }else{
-        //     type Key<K> = K extends keyof T
-        //     const keys = _.keys(iter)
-        //         const res:Array<[Key,T[Key]]> = []
-        //         for(const key of keys){
-        //             res.push([key as Key, iter[key as Key]])
-        //         }
-        //     return res
-        // }
-    // }
-
-    // for(const [a,b] of L.each([1,2,3,4])){
-    //     a
-    // }
-
-    // export const map = _.curry(function *(mapper, iter){
-    //     for(const [key,val] of L.each(iter)){
-    //         yield _.go1(val, val=>mapper(val, key))
-    //     }
-    // })
-
+    interface map{
+        <Val,Result>(mapper:(val:Val, idx?:number) => Result) : (iter:Iterable<Val>)=>Iterable<Result>
+        <Val,Result>(mapper:(val:Val, idx?:number) => Result, iter:Iterable<Val>) : Iterable<Result>
+    }
+    export const map:map = _.curry(function *(mapper:any, iter:any){
+        for(const [key,val] of L.each(iter)){
+            yield _.go1(val, (val:any)=>mapper(val, key))
+        }
+    })
+    
     // //identity
     // export const identity = function(iter){
     //     return iter

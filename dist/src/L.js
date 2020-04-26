@@ -37,8 +37,24 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var _1 = require("./_");
+var index_1 = require("../index");
 var log = console.log;
 function isIter(iter) {
     return iter[Symbol.iterator] !== undefined;
@@ -48,12 +64,33 @@ function isObject(iter) {
 }
 var L;
 (function (L) {
-    var e_1, _a;
+    L.range = function (start, stop) {
+        var origin, i;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    origin = start;
+                    stop = stop || (start = 0, origin);
+                    i = start;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < stop)) return [3, 4];
+                    return [4, i];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3:
+                    i++;
+                    return [3, 1];
+                case 4: return [2];
+            }
+        });
+    };
     L.each = function (iter) {
         return isIter(iter) ?
             (function () {
-                var index, iter_1, iter_1_1, val, e_2_1;
-                var e_2, _a;
+                var index, iter_1, iter_1_1, val, e_1_1;
+                var e_1, _a;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
@@ -75,22 +112,22 @@ var L;
                             return [3, 2];
                         case 5: return [3, 8];
                         case 6:
-                            e_2_1 = _b.sent();
-                            e_2 = { error: e_2_1 };
+                            e_1_1 = _b.sent();
+                            e_1 = { error: e_1_1 };
                             return [3, 8];
                         case 7:
                             try {
                                 if (iter_1_1 && !iter_1_1.done && (_a = iter_1.return)) _a.call(iter_1);
                             }
-                            finally { if (e_2) throw e_2.error; }
+                            finally { if (e_1) throw e_1.error; }
                             return [7];
                         case 8: return [2];
                     }
                 });
             })()
             : (function () {
-                var e_3, _a;
-                var keys = _1._.keys(iter);
+                var e_2, _a;
+                var keys = index_1._.keys(iter);
                 var res = [];
                 try {
                     for (var keys_1 = __values(keys), keys_1_1 = keys_1.next(); !keys_1_1.done; keys_1_1 = keys_1.next()) {
@@ -98,27 +135,60 @@ var L;
                         res.push([key, iter[key]]);
                     }
                 }
-                catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
                 finally {
                     try {
                         if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) _a.call(keys_1);
                     }
-                    finally { if (e_3) throw e_3.error; }
+                    finally { if (e_2) throw e_2.error; }
                 }
                 return res;
             })();
     };
-    try {
-        for (var _b = __values(L.each({ hi: "string" })), _c = _b.next(); !_c.done; _c = _b.next()) {
-            var b = _c.value;
-            log(b);
-        }
-    }
-    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-    finally {
-        try {
-            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-        }
-        finally { if (e_1) throw e_1.error; }
-    }
+    L.map = index_1._.curry(function (mapper, iter) {
+        var _loop_1, _a, _b, _c, key, val, e_3_1;
+        var e_3, _d;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    _loop_1 = function (key, val) {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4, index_1._.go1(val, function (val) { return mapper(val, key); })];
+                                case 1:
+                                    _a.sent();
+                                    return [2];
+                            }
+                        });
+                    };
+                    _e.label = 1;
+                case 1:
+                    _e.trys.push([1, 6, 7, 8]);
+                    _a = __values(L.each(iter)), _b = _a.next();
+                    _e.label = 2;
+                case 2:
+                    if (!!_b.done) return [3, 5];
+                    _c = __read(_b.value, 2), key = _c[0], val = _c[1];
+                    return [5, _loop_1(key, val)];
+                case 3:
+                    _e.sent();
+                    _e.label = 4;
+                case 4:
+                    _b = _a.next();
+                    return [3, 2];
+                case 5: return [3, 8];
+                case 6:
+                    e_3_1 = _e.sent();
+                    e_3 = { error: e_3_1 };
+                    return [3, 8];
+                case 7:
+                    try {
+                        if (_b && !_b.done && (_d = _a.return)) _d.call(_a);
+                    }
+                    finally { if (e_3) throw e_3.error; }
+                    return [7];
+                case 8: return [2];
+            }
+        });
+    });
 })(L = exports.L || (exports.L = {}));

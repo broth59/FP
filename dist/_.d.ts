@@ -23,6 +23,7 @@ export declare namespace _ {
     export function extend<Target, Source>(target: Target, src: Source): Target & Source;
     export const negate: <T extends AnyFunction>(fn: T) => (...args: T extends (...args: infer R) => any ? R : any) => boolean;
     export function go1<T, K>(a: T, fn: T extends Promise<infer Val> ? (val: Val) => K : (val: T) => K): T extends Promise<any> ? Promise<K> : K;
+    export function go2<Acc, Val, Fn, Result>(acc: Acc, a: Val, fn: Acc extends Promise<infer R> ? (acc: R, val: Val) => Result : (acc: Acc, val: Val) => Result): Promise<any> | Result;
     export const catchNoop: <T extends Iterable<any>>(iter: T) => Generator<Promise<any> | [number, any], void, unknown>;
     export {};
 }
