@@ -2,8 +2,8 @@ import * as _ from "../_"
 import * as L from "../L"
 
 interface forEach{
-    (fn:AnyFunction) : <Iter extends Iterable<any>>(iter:Iter) => void
-    <Iter extends Iterable<any>> (fn:AnyFunction, iter:Iter) : void
+    <Val>(fn:(arg:Val)=>void) : (iter:Iterable<Val>) => void
+    <Val>(fn:(arg:Val)=>void, iter:Iterable<Val>) : void
 }
 
 export const forEach:forEach = _.curry(function (f,iter){

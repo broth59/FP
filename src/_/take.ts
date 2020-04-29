@@ -3,11 +3,14 @@ import * as L from '../L'
 import { nop, noop } from '../symbol'
 
 interface take {
-    (limit: number): <Iter extends Iterable<any>>(iter: Iter) => Iter | []
-    <Iter extends Iterable<any>>(limit: number, iter: Iter): Iter | []
+    <Val>(limit: number): (
+        iter: Iterable<Val>
+    ) => Val extends Promise<infer Kernel> ? Promise<Iterable<Kernel>> : Iterable<Val>
+    <Val>(limit: number, iter: Iterable<Val>): Val extends Promise<infer Kernel>
+        ? Promise<Iterable<Kernel>>
+        : Iterable<Val>
 }
 
-const log = console.log
 export const take: take = _.curry(function take(limit, iter) {
     let res: any[] = []
     let init_count = 0

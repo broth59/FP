@@ -3,11 +3,11 @@ import * as L from '../L'
 
 interface reduce {
     <Result, Val>(fn: (acc: Val, val: Val) => Result): (iter: Iterable<Val>) => Result
-    <Result, Val>(fn: (acc: Val, val: Val) => Result, acc: Iterable<Val> | Iterable<Promise<Val>>): Result
+    <Result, Val>(fn: (acc: Val, val: Val) => Result, acc: Iterable<Promise<Val>> | Iterable<Val>): Result
     <Result, Val, Acc>(
         fn: (acc: Acc, val: Val) => Result,
         acc: Acc,
-        iter: Iterable<Val> | Iterable<Promise<Val>>
+        iter: Iterable<Promise<Val>> | Iterable<Val>
     ): Result
 }
 

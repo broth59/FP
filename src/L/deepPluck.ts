@@ -3,6 +3,7 @@ import * as _ from "../_"
 import { isIter } from "@src/is";
 
 interface deepPluck{
+    <Iter extends Iterable<any>>(key:string) : (iter:Iter) => Iterable<any>
     <Iter extends Iterable<any>>(key:string, iter:Iter) : Iterable<any>
 }
 

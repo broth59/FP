@@ -1,11 +1,11 @@
-import * as L from '../L';
-import * as _ from '../_';
+import * as L from '../L'
+import * as _ from '../_'
 
-interface filter{
-    <Val> (predi:(arg:Val)=>any) : <Iter extends Iterable<Val>>(iter:Iter) => Iter    
-    <Iter extends Iterable<any>> (predi:(arg:Iter extends Iterable<infer Val> ? Val : any)=>any, iter:Iter) : Iter
+interface filter {
+    <Val>(predi: (arg: Val) => boolean | any): (iter: Iterable<Val>) => Iterable<Val>
+    <Val>(predi: (arg: Val) => boolean | any, iter: Iterable<Val>): Iterable<Val>
 }
 
-export const filter:filter = _.curry(function (predicate, iter){
-    return _.go(iter, L.filter(predicate), _.takeAll) 
-}) as any
+export const filter: filter = _.curry(function (predicate, iter) {
+    return _.go(iter, L.filter(predicate), _.takeAll)
+})
