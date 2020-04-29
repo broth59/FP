@@ -1,3 +1,5 @@
+/// <reference path="../type/Operator.d.ts"/>
+
 interface Curried<T extends AnyFunction>{
     (a:Arg<T>, ...bs:RestArgs<T>): ReturnType<T>
     (a:Arg<T>): (...bs:RestArgs<T>) => ReturnType<T>      
