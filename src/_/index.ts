@@ -39,12 +39,43 @@ export { filter } from './filter'
 //reduce 계열
 export { reduce } from './reduce'
 
+export { min } from './min'
+
+export { max } from './max'
+
+export { minby } from './minby'
+
+export { maxby } from './maxby'
+
+export { groupby } from './groupby'
+
+export { count } from './countby'
+
+export { countby } from './countby'
+
+export { indexby } from './indexby'
+
+export { uniq } from './uniq'
+
+//find 계열
+export { find } from './find'
+
+export { findIndex } from './findIndex'
+
+export { some } from './some'
+
+export { every } from './every'
+
+export { contains } from './contains'
+
 //집계 함수
 export { take } from './take'
 
 export { takeAll } from './takeAll'
 
-export { tab } from './tab'
+export { takeUntil } from './takeUntil'
+
+export { tap } from './tap'
 
 export { forEach } from './forEach'
 

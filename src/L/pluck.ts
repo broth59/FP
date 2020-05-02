@@ -1,19 +1,15 @@
-import * as L from "../L"
-import * as _ from "../_"
-import { isIter } from "@src/is";
+import * as L from '../L'
+import * as _ from '../_'
 
-interface pluck{
-    <Iter extends Iterable<any>>(
-        key:Iter extends Iterable<infer R> ? keyof R : string) : (iter:Iter) => Iter extends Iterable<infer R> ? Generator<R[keyof R]> : Generator<any>
-    <Iter extends Iterable<any>>(
-        key:Iter extends Iterable<infer R> ? keyof R : string, 
-        iter:Iter) : Iter extends Iterable<infer R> ? Generator<R[keyof R]> : Generator<any>
+interface pluck {
+    <Val>(key: Val extends Promise<infer R> ? keyof R : keyof Val): (
+        iter: Iterable<Val>
+    ) => Generator<Val extends Promise<infer R> ? R[keyof R] : Val[keyof Val]>
+    <Val>(key: Val extends Promise<infer R> ? keyof R : keyof Val, iter: Iterable<Val>): Generator<
+        Val extends Promise<infer R> ? R[keyof R] : Val[keyof Val]
+    >
 }
 
-export const pluck:pluck = _.curry(function (key, iter){
-    return L.map(val=>_.get(key,val as Object))(iter);
+export const pluck: pluck = _.curry(function (key, iter) {
+    return L.map((val) => _.get(key, val as Object))(iter)
 })
-
-
-
-

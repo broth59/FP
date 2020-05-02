@@ -2,13 +2,18 @@ import * as _ from '../_'
 import * as L from '../L'
 
 interface reduce {
-    <Result, Val>(fn: (acc: Val, val: Val) => Result): (iter: Iterable<Val>) => Result
-    <Result, Val>(fn: (acc: Val, val: Val) => Result, acc: Iterable<Promise<Val>> | Iterable<Val>): Result
+    <Result, Val>(fn: (acc: Val extends Promise<infer R> ? R : Val, val: Val) => Result): (
+        iter: Iterable<Val>
+    ) => Val extends Promise<any> ? Promise<Result> : Result
+    <Result, Val>(
+        fn: (acc: Val extends Promise<infer R> ? R : Val, val: Val extends Promise<infer R> ? R : Val) => Result,
+        acc: Iterable<Val>
+    ): Val extends Promise<any> ? Promise<Result> : Result
     <Result, Val, Acc>(
-        fn: (acc: Acc, val: Val) => Result,
+        fn: (acc: Acc, val: Val extends Promise<infer R> ? R : Val) => Result,
         acc: Acc,
-        iter: Iterable<Promise<Val>> | Iterable<Val>
-    ): Result
+        iter: Iterable<Val>
+    ): Val extends Promise<any> ? Promise<Result> : Result
 }
 
 export const reduce: reduce = _.curry(function reduce(fn: any, acc: any, iter?: any): any {

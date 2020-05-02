@@ -2,12 +2,16 @@ import * as _ from '../_'
 import * as L from '../L'
 import { nop, noop } from '../symbol'
 
-interface takeAll {
-    <Val>(predi: (arg: Val) => any): (iter: Iterable<Promise<Val> | Val>) => Iterable<Val>
-    <Val>(limit: number, iter: Iterable<Promise<Val> | Val>): Iterable<Val>
+interface takeUntil {
+    <Val>(predi: (arg: Val extends Promise<infer R> ? R : Val) => any): (
+        iter: Iterable<Val>
+    ) => Iterable<Val extends Promise<any> ? Promise<Val> : Val>
+    <Val>(predi: (arg: Val extends Promise<infer R> ? R : Val) => any, iter: Iterable<Promise<Val> | Val>): Iterable<
+        Val extends Promise<any> ? Promise<Val> : Val
+    >
 }
 
-export const takeWhile: takeAll = _.curry(function (f, iter) {
+export const takeUntil: takeUntil = _.curry(function (f, iter) {
     iter = L.each(iter)
     iter.return = null
     let res: any[] = []
