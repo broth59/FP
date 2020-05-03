@@ -1,3 +1,5 @@
+import * as _ from './_'
+
 export function isPromise(value: any | Promise<any>): value is Promise<any> {
     return value instanceof Promise
 }

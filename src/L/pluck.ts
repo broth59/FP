@@ -4,9 +4,9 @@ import * as _ from '../_'
 interface pluck {
     <Val>(key: Val extends Promise<infer R> ? keyof R : keyof Val): (
         iter: Iterable<Val>
-    ) => Generator<Val extends Promise<infer R> ? R[keyof R] : Val[keyof Val]>
+    ) => Generator<Val extends Promise<infer R> ? Promise<R[keyof R]> : Val[keyof Val]>
     <Val>(key: Val extends Promise<infer R> ? keyof R : keyof Val, iter: Iterable<Val>): Generator<
-        Val extends Promise<infer R> ? R[keyof R] : Val[keyof Val]
+        Val extends Promise<infer R> ? Promise<R[keyof R]> : Val[keyof Val]
     >
 }
 

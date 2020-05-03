@@ -8,6 +8,7 @@ interface forEach {
 
 export const forEach: forEach = _.curry(function (f, iter) {
     for (const [key, val] of L.each(iter)) {
-        if (val) f(val, key)
+        if (val instanceof Promise) val.then((a) => f(a, key))
+        else f(val, key)
     }
 })

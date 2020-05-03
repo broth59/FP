@@ -11,5 +11,5 @@ interface filter {
 }
 
 export const filter: filter = _.curry(function (predicate, iter) {
-    return _.go(iter, L.filter(predicate), _.takeAll)
+    return _.go(iter, L.filter(predicate), _.takeAll) as any
 })

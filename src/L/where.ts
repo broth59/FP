@@ -1,11 +1,26 @@
 import * as _ from '../_'
 import * as L from '../L'
 
+type PromisPart<T> = Partial<T> extends Promise<infer R> ? Partial<R> : Partial<T>
+//Val extends Promise<infer R> ? number : { [Key in keyof Partial<Val>]: Partial<Val>[Key] }
 interface where {
-    <Val, Part extends Partial<Val>>(attr: { [Key in keyof Part]: Part[Key] }): (
-        iter: Iterable<Promise<Val> | Val>
-    ) => Generator<Val>
-    <Val, Part extends Partial<Val>>(attr: { [Key in keyof Part]: Part[Key] }, iter: Iterable<Val>): Generator<Val>
+    <
+        Val,
+        Condition extends Val extends Promise<infer R>
+            ? { [Key in keyof Partial<R>]: Partial<R>[Key] }
+            : { [Key in keyof Partial<Val>]: Partial<Val>[Key] }
+    >(
+        attr: Condition
+    ): (iter: Iterable<Val>) => Generator<Val>
+    <
+        Val,
+        Condition extends Val extends Promise<infer R>
+            ? { [Key in keyof Partial<R>]: Partial<R>[Key] }
+            : { [Key in keyof Partial<Val>]: Partial<Val>[Key] }
+    >(
+        attr: Condition,
+        iter: Iterable<Val>
+    ): Generator<Val>
 }
 
 export const where: where = _.curry(function (attr, iter) {

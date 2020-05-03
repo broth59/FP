@@ -3,8 +3,7 @@ import * as _ from '../_'
 import * as C from '../C'
 
 interface takeAll {
-    <Val>(iter: Iterable<Val>): Val extends Promise<infer Kernel> ? Promise<Iterable<Kernel>> : Iterable<Val>
+    <Val>(iter: Iterable<Val>): Simul<Val> extends Promise<any> ? Promise<Iterable<DeepPromise<Val>>> : Iterable<Val>
 }
 
-export const takeAll:takeAll = C.take(Infinity) as any
-
+export const takeAll: takeAll = C.take(Infinity) as any

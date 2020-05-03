@@ -10,7 +10,7 @@ function toIter<T extends Iterable<any> | IterableIterator<any>>(iter: T) {
     return iter && iter[Symbol.iterator] ? iter[Symbol.iterator]() : [][Symbol.iterator]()
 }
 
-function isString(literal:any): literal is string{
+function isString(literal: any): literal is string {
     return literal && !!literal.toLowerCase
 }
 
@@ -19,12 +19,12 @@ type Deep<T extends Iterable<any>> = T extends Iterable<infer U> ? U : T
 export function flat<Iter extends Iterable<any>, Val>(
     iter: Iter
 ): Deep<Iter> extends Promise<Iterable<infer R1>>
-    ? R1 extends Promise<infer R2>
-        ? Promise<Generator<R2>>
+    ? Simul<R1> extends Promise<any>
+        ? Promise<Generator<DeepPromise<R1>>>
         : Promise<Generator<R1>>
     : Deep<Iter> extends Iterable<infer R1>
-    ? R1 extends Promise<infer R2>
-        ? Promise<Generator<R2>>
+    ? Simul<R1> extends Promise<any>
+        ? Promise<Generator<DeepPromise<R1>>>
         : Generator<R1>
     : Generator<Deep<Deep<Iter>>>
 // export function flat<Iter extends Iterable<any>>(
@@ -56,13 +56,13 @@ export function flat<T extends Iterable<any>>(iter: T, depth: number = 1): any {
             if (cur.done) {
                 iterStack.pop()
                 return recurr()
-            } else if (iterStack.length <= depth && cur.value[Symbol.iterator] && !isString(cur.value)) {
+            } else if (cur.value && iterStack.length <= depth && cur.value[Symbol.iterator] && !isString(cur.value)) {
                 iterStack.push(cur.value[Symbol.iterator]())
                 return recurr()
-            } else if (cur.value instanceof Promise) {
+            } else if (cur.value && cur.value instanceof Promise) {
                 return {
                     value: cur.value.then((val) => {
-                        if ((iterStack.length > depth && !val[Symbol.iterator]) || isString(val)) return val
+                        if ((val && iterStack.length > depth && !val[Symbol.iterator]) || isString(val)) return val
                         const iter = val[Symbol.iterator](),
                             cur = iter.next()
                         return cur.done ? Promise.reject(nop) : (iterStack.push(iter), cur.value)

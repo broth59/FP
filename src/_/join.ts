@@ -2,8 +2,8 @@ import * as _ from '../_'
 import * as L from '../L'
 
 interface join {
-    (seperator: string, iter: Iterable<any>): string
-    (seperator: string): (iter: Iterable<any>) => string
+    <Val>(seperator: string, iter: Iterable<Val>): Val extends Promise<any> ? Promise<string> : string
+    <Val>(seperator: string): (iter: Iterable<Val>) => Val extends Promise<any> ? Promise<string> : string
 }
 
 export const join: join = _.curry(function (seperator, iter) {

@@ -8,11 +8,9 @@ export function go2<Acc, Val, Result>(
     return a instanceof Promise
         ? a.then(
               (a) => {
-                  if (acc instanceof Symbol) {
-                      if (acc == noop && a == nop) return noop
-                      if (acc == noop) return a
-                      if (a == noop) return acc
-                  }
+                  if ([noop, nop].includes(acc as any) && [noop, nop].includes(a)) return noop
+                  if ([noop, nop].includes(acc as any)) return a
+                  if ([noop, nop].includes(a)) return acc
                   return fn(acc, a)
               },
               (e) => (e == nop ? acc : Promise.reject(e))

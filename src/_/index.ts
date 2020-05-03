@@ -24,6 +24,8 @@ export { extend } from './extend'
 //보조 함수
 export { range } from './range'
 
+export { log } from './log'
+
 export { identity } from './identity'
 
 export { negate } from './negate'
@@ -33,6 +35,7 @@ export { flat } from './flat'
 //map 계열
 export { map } from './map'
 
+export { deepPluck } from './deepPluck'
 //filter 계열
 export { filter } from './filter'
 
@@ -83,3 +86,5 @@ export { join } from './join'
 
 //비동기 연산자
 export { catchNoop } from './catchNoop'
+
+export { catchErr } from './catchErr'

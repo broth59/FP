@@ -4,12 +4,8 @@ import * as C from '../C'
 import { nop } from '../symbol'
 
 interface filter {
-    <Val>(predi: (arg: Val extends Promise<infer R> ? R : Val) => any): (
-        iter: Iterable<Val>
-    ) => Promise<Iterable<Val extends Promise<any> ? Promise<Val> : Val>>
-    <Val>(predi: (arg: Val extends Promise<infer R> ? R : Val) => any, iter: Iterable<Val>): Promise<
-        Iterable<Val extends Promise<any> ? Promise<Val> : Val>
-    >
+    <Val>(predi: (arg: Val extends Promise<infer R> ? R : Val) => any): (iter: Iterable<Val>) => Promise<Iterable<Val>>
+    <Val>(predi: (arg: Val extends Promise<infer R> ? R : Val) => any, iter: Iterable<Val>): Promise<Iterable<Val>>
 }
 
 export const filter: filter = _.curry(function (predicate, iter) {

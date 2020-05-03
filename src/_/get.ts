@@ -8,7 +8,7 @@ interface get {
 }
 
 export const get: get = _.curry(function get<T extends Object>(key: string, obj: T): any {
-    if (!isObject(obj)) return undefined
+    if (!key || !isObject(obj)) return undefined
     const keys: string[] = key.split('.')
     const first = keys.shift()
     return (
