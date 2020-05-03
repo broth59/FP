@@ -1,6 +1,6 @@
 {
     "name": "fp-jin",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Functional Reactive Programming helper",
     "main": "index.js",
     "dependencies": {
