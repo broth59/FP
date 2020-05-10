@@ -11,12 +11,10 @@ export function each<T extends Object | Iterable<any>, Key extends keyof T>(
                   yield [index++, val]
               }
           })()
-        : ((function () {
+        : ((function* () {
               const keys = _.keys(iter)
-              const res = []
               for (const key of keys) {
-                  res.push([key, iter[key]])
+                  yield [key, iter[key]]
               }
-              return res
           })() as any)
 }

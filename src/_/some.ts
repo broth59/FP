@@ -13,6 +13,6 @@ interface some {
 }
 
 export const some: some = _.curry(function (predi, iter) {
-    const value = _.find(predi, iter)
-    return isPromise(value) ? value.then((val) => !!val) : !!value
+    const value = _.findIndex(predi, iter)
+    return isPromise(value) ? value.then((val) => val != -1) : value != -1
 })

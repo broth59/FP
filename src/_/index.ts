@@ -15,6 +15,8 @@ export { keys } from './keys'
 
 export { head } from './head'
 
+export { second } from './second'
+
 export { last } from './last'
 
 export { get } from './get'

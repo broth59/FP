@@ -20,6 +20,6 @@ interface contains {
 }
 
 export const contains: contains = _.curry(function (val, iter) {
-    const value = _.find((x) => x == val)(iter)
-    return isPromise(value) ? value.then((val) => !!val) : !!value
+    const value = _.findIndex((x) => x == val)(iter)
+    return isPromise(value) ? value.then((val) => val != -1) : value != -1
 })

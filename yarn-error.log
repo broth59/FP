@@ -1,5 +1,5 @@
 Arguments: 
-  /home/broth/.nvm/versions/node/v13.7.0/bin/node /usr/share/yarn/bin/yarn.js add @types/rxjs
+  /home/broth/.nvm/versions/node/v13.7.0/bin/node /usr/share/yarn/bin/yarn.js add fp-gin
 
 PATH: 
   /home/broth/anaconda3/bin:/home/broth/anaconda3/condabin:/home/broth/.nvm/versions/node/v13.7.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/broth/Desktop/IDE/Pycharm/bin:/home/broth/.yarn/bin:/home/broth/Desktop/IDE/Pycharm/bin:/home/broth/.yarn/bin
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2frxjs: Not found
+  Error: https://registry.yarnpkg.com/fp-gin: Not found
       at Request.params.callback [as _callback] (/usr/share/yarn/lib/cli.js:66987:18)
       at Request.self.callback (/usr/share/yarn/lib/cli.js:140748:22)
       at Request.emit (events.js:321:20)
@@ -28,18 +28,26 @@ Trace:
 
 npm manifest: 
   {
+      "name": "fp-jin",
+      "version": "1.1.7",
+      "description": "Functional Reactive Programming helper",
+      "main": "index.js",
       "dependencies": {
           "@types/lodash": "^4.14.150",
           "@types/node": "^13.13.2",
           "lodash": "^4.17.15",
+          "reflect-metadata": "^0.1.13",
           "rxjs": "^6.5.5",
           "systemjs": "^6.3.1",
           "tsc": "^1.20150623.0",
-          "typescript": "^3.8.3"
+          "typescript": "^3.8.3",
+          "typescript-ioc": "^3.2.2"
       },
       "scripts": {
           "tsc": "tsc"
-      }
+      },
+      "author": "Jin",
+      "license": "MIT"
   }
 
 yarn manifest: 
@@ -60,10 +68,25 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.2.tgz#160d82623610db590a64e8ca81784e11117e5a54"
     integrity sha512-LB2R1Oyhpg8gu4SON/mfforE525+Hi/M1ineICEDftqNVTyFg1aRIeGuTvXAoWHc4nbrFncWtJgMmoyRvuGh7A==
   
+  lodash.get@^4.4.2:
+    version "4.4.2"
+    resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+    integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+  
+  lodash.set@^4.3.2:
+    version "4.3.2"
+    resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
+    integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
+  
   lodash@^4.17.15:
     version "4.17.15"
     resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
     integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+  
+  reflect-metadata@^0.1.13:
+    version "0.1.13"
+    resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
+    integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
   
   rxjs@^6.5.5:
     version "6.5.5"
@@ -86,6 +109,15 @@ Lockfile:
     version "1.11.1"
     resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
     integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
+  
+  typescript-ioc@^3.2.2:
+    version "3.2.2"
+    resolved "https://registry.yarnpkg.com/typescript-ioc/-/typescript-ioc-3.2.2.tgz#5250a3691ea1d9425cbac22a44e8d6efb9584204"
+    integrity sha512-NI09BFj213x8vqOboOgrQt94MdNfKuXi68pnp4obT9a3uRk5cVjTPagLwkvZJXpSN4iV3sbSGhlQgY2uHEBhoA==
+    dependencies:
+      lodash.get "^4.4.2"
+      lodash.set "^4.3.2"
+      reflect-metadata "^0.1.13"
   
   typescript@^3.8.3:
     version "3.8.3"

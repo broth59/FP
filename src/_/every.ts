@@ -13,6 +13,6 @@ interface every {
 }
 
 export const every: every = _.curry(function (predi, iter) {
-    const value = _.find(_.negate(predi), iter)
-    return isPromise(value) ? value.then((val) => !!val) : !!value
+    const value = _.findIndex(_.negate(predi), iter)
+    return isPromise(value) ? value.then((val) => val == -1) : value == -1
 })
