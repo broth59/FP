@@ -94,3 +94,16 @@ module.export = {
 }
 
 ```
+
+
+``` js
+Render: function () {
+  Return (
+    <Div className = “commentBox”>
+      <H1> Comments </ h1>
+      <CommentList data = {this.state.data} />
+      <CommentForm onCommentSubmit = {this.handleCommentSubmit} />
+    </Div>
+  );
+}
+```
