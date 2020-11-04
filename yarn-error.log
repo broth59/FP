@@ -1,35 +1,35 @@
 Arguments: 
-  /home/broth/.nvm/versions/node/v13.7.0/bin/node /usr/share/yarn/bin/yarn.js add fp-gin
+  /home/broth59/.nvm/versions/node/v12.18.2/bin/node /usr/share/yarn/bin/yarn.js add jest @type/jest
 
 PATH: 
-  /home/broth/anaconda3/bin:/home/broth/anaconda3/condabin:/home/broth/.nvm/versions/node/v13.7.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/broth/Desktop/IDE/Pycharm/bin:/home/broth/.yarn/bin:/home/broth/Desktop/IDE/Pycharm/bin:/home/broth/.yarn/bin
+  /home/broth59/.nvm/versions/node/v12.18.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
   1.22.4
 
 Node version: 
-  13.7.0
+  12.18.2
 
 Platform: 
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/fp-gin: Not found
+  Error: https://registry.yarnpkg.com/@type%2fjest: Not found
       at Request.params.callback [as _callback] (/usr/share/yarn/lib/cli.js:66987:18)
       at Request.self.callback (/usr/share/yarn/lib/cli.js:140748:22)
-      at Request.emit (events.js:321:20)
+      at Request.emit (events.js:315:20)
       at Request.<anonymous> (/usr/share/yarn/lib/cli.js:141720:10)
-      at Request.emit (events.js:321:20)
+      at Request.emit (events.js:315:20)
       at IncomingMessage.<anonymous> (/usr/share/yarn/lib/cli.js:141642:12)
-      at Object.onceWrapper (events.js:427:28)
-      at IncomingMessage.emit (events.js:333:22)
-      at endReadableNT (_stream_readable.js:1201:12)
+      at Object.onceWrapper (events.js:421:28)
+      at IncomingMessage.emit (events.js:327:22)
+      at endReadableNT (_stream_readable.js:1221:12)
       at processTicksAndRejections (internal/process/task_queues.js:84:21)
 
 npm manifest: 
   {
       "name": "fp-jin",
-      "version": "1.1.7",
+      "version": "1.1.8",
       "description": "Functional Reactive Programming helper",
       "main": "index.js",
       "dependencies": {

@@ -17,15 +17,15 @@ interface reduce {
 }
 
 export const reduce: reduce = _.curry(function reduce(fn: any, acc: any, iter?: any): any {
-    //if(!acc)  return _.reduce(_.head(acc=[...f]), acc)
-    if (!iter) {
+	
+	if (!iter) {
         return reduce(fn, _.head((iter = L.catchNoop(acc)[Symbol.iterator]())), iter)
     }
     iter = L.each(iter)
     iter.return = null
     return _.go1(acc, function recurr(acc: any): any {
         for (const [key, val] of iter) {
-            acc = _.go2(acc, val, fn)
+			acc = _.go2(acc, val, fn)
             if (acc instanceof Promise) return acc.then(recurr)
         }
         return acc

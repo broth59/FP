@@ -5,14 +5,14 @@ import { nop, noop } from '../symbol'
 interface take {
     <Val>(limit: number): (
         iter: Iterable<Val>
-    ) => Val extends Promise<infer Kernel> ? Promise<Iterable<Kernel>> : Iterable<Val>
+    ) => Val extends Promise<infer Kernel> ? Promise<Iterable<DeepPromise<Kernel>>> : Iterable<Val>
     <Val>(limit: number, iter: Iterable<Val>): Val extends Promise<infer Kernel>
         ? Promise<Iterable<Kernel>>
         : Iterable<Val>
 }
 
 export const take: take = _.curry(function take(limit, iter) {
-    let res: any[] = []
+    const res: any[] = []
     let init_count = 0
     iter = L.each(iter)
     iter.return = null

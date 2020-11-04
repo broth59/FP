@@ -10,6 +10,6 @@ interface tap {
 
 export const tap: tap = _.curry(function* (fn: any, iter: any) {
     for (const [key, val] of L.each(iter)) {
-        yield val instanceof Promise ? val.then((a) => fn(a, key)) : fn(val, key)
+        yield val instanceof Promise ? val.then((a) => (fn(a, key), val)) : (fn(val, key), val)
     }
 })

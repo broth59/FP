@@ -10,8 +10,8 @@ interface map {
         iter: Iterable<Val>
     ): Generator<Val extends Promise<any> ? Promise<DeepPromise<Result>> : Result>
 }
-export const map: map = _.curry(function* (mapper: any, iter: any) {
+export const map: map = _.curry(function* (mapper: AnyFunction, iter: any) {
     for (const [key, val] of L.each(iter)) {
-        yield _.go1(val, (val: any) => mapper(val, key))
+	   yield _.go1(val, (val: any) => mapper(val, key))
     }
 })

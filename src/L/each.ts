@@ -1,12 +1,12 @@
-import { isIter } from '../is'
+import { isIterable } from '../is'
 import * as _ from '../_'
 
 export function each<T extends Object | Iterable<any>, Key extends keyof T>(
     iter: T
 ): T extends Iterable<infer Yield> ? Generator<Array<[number, Yield]>, any, unknown> : Array<[Key, T[Key]]> {
-    return isIter(iter)
+    return isIterable(iter)
         ? (function* () {
-              let index: number = 0
+              let index = 0
               for (const val of iter) {
                   yield [index++, val]
               }

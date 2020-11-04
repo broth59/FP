@@ -4,11 +4,11 @@ function isPromise(value) {
     return value instanceof Promise;
 }
 exports.isPromise = isPromise;
-function isIter(iter) {
+function isIterable(iter) {
     return iter[Symbol.iterator] !== undefined;
 }
-exports.isIter = isIter;
+exports.isIterable = isIterable;
 function isObject(mist) {
-    return typeof mist === 'object';
+    return typeof mist === "object";
 }
 exports.isObject = isObject;
